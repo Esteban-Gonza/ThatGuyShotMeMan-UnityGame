@@ -5,9 +5,17 @@ using UnityEngine.InputSystem;
 public class PlayerController : NetworkBehaviour, IBeforeUpdate
 {
     [SerializeField] private float moveSpeed = 6f;
+    [SerializeField] private float jumpForce = 1000f;
 
+    [Networked] private NetworkButtons buttonsPrev { get; set; }
     private float horizontal;
     private Rigidbody2D rigidbody;
+
+    private enum PlayerInputButtons
+    {
+        None,
+        Jump
+    }
 
     public override void Spawned()
     {
@@ -32,12 +40,27 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         if (Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority,out PlayerData input))
         {
-            rigidbody.linearVelocity = new Vector2(input.horizontalInput * moveSpeed, rigidbody.linearVelocityY);
+            rigidbody.linearVelocity = new Vector2(input.HorizontalInput * moveSpeed, rigidbody.linearVelocityY);
+            CheckJumpInput(input);
         }
+    }
+
+    private void CheckJumpInput(PlayerData input)
+    {
+        NetworkButtons pressed = input.NetworkButtons.GetPressed(buttonsPrev);
+        if (pressed.WasPressed(buttonsPrev, PlayerInputButtons.Jump))
+        {
+            rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Force);
+        }
+
+        buttonsPrev = input.NetworkButtons;
     }
 
     public PlayerData GetPlayerNetworkInput()
     {
-        return new PlayerData{horizontalInput = horizontal};
+        PlayerData data = new PlayerData();
+        data.HorizontalInput = horizontal;
+        data.NetworkButtons.Set(PlayerInputButtons.Jump, Keyboard.current.spaceKey.isPressed);
+        return data;
     }
 }

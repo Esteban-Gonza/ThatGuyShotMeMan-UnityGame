@@ -1,7 +1,7 @@
-using UnityEngine;
 using Fusion;
 
 public struct PlayerData : INetworkInput
 {
-    public float horizontalInput;
+    public float HorizontalInput;
+    public NetworkButtons NetworkButtons;
 }
