@@ -44,6 +44,9 @@ TagManager:
   - name: Player
     uniqueID: 2661707177
     locked: 0
+  - name: WorldUI
+    uniqueID: 2568522553
+    locked: 0
   m_RenderingLayers:
   - Default
   m_MigratedRenderPipelines: []

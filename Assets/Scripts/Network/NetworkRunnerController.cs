@@ -9,6 +9,9 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 {
     public event Action OnStartedRunnerConnection;
     public event Action OnPlayerJoinedSuccesfully;
+
+    public string localPlayerName { get; private set; }
+
     [SerializeField] private NetworkRunner networkRunnerPrefab;
 
     private NetworkRunner networkRunnerInstance;
@@ -16,6 +19,11 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
     public void ShutDownRunner()
     {
         networkRunnerInstance.Shutdown();
+    }
+
+    public void SetPlayerName(string str)
+    {
+        localPlayerName = str;
     }
 
     public async void StartGame(GameMode mode, string roomName)
